@@ -1,5 +1,4 @@
 /*
-
 The == operator compares objects by identity. But sometimes you’d prefer to compare the values of their actual properties.
 
 Write a function deepEqual that takes two values and returns true only if they are the same value or are objects with the same properties, where the values of the properties are equal when compared with a recursive call to deepEqual.
@@ -97,3 +96,72 @@ console.log(
   )
 );
 // → false
+
+//Shorter solution
+function deepEqual(first, second, indentation = "") {
+  if (typeof first === typeof second) {
+    if (typeof first === "object") {
+      if (first !== null) {
+        firstKeys = Object.keys(first);
+        secondKeys = Object.keys(second);
+        if (firstKeys.length == secondKeys.length) {
+          trackInequalities = [];
+          for (i = 0; i <= firstKeys.length - 1; i++) {
+            trackInequalities.push(
+              deepEqual(first[firstKeys[i]], second[secondKeys[i]], "    ")
+            );
+          }
+          return !trackInequalities.includes(false);
+        } else {
+          // Different amount of keys
+          return false;
+        }
+      } else {
+        // Both are null
+        return true;
+      }
+    } else {
+      return first === second;
+    }
+  } else {
+    return false;
+  }
+}
+function test(assertion, expected, actual) {
+  console.log(assertion, expected === actual ? "OK" : "FAILED");
+}
+
+test(
+  "Shallow deepEqual with same identities should yield true",
+  true,
+  deepEqual(1, 1)
+);
+test(
+  "Shallow deepEqual with different identities should yield false",
+  false,
+  deepEqual(1, 2)
+);
+test(
+  "Deep deepEqual with same identities should yield true",
+  true,
+  deepEqual(
+    { value: "test", rest: { value: "test2", rest: null } },
+    { value: "test", rest: { value: "test2", rest: null } }
+  )
+);
+test(
+  "Deep deepEqual with different identities should yield false",
+  false,
+  deepEqual(
+    { value: "test", rest: { value: "test2", rest: null } },
+    { value: "test", rest: { value: "diff", rest: null } }
+  )
+);
+test(
+  "Deep deepEqual with identical objects containing arrays should yield true",
+  true,
+  deepEqual(
+    { value: "test", rest: ["test", "test2", "test3"] },
+    { value: "test", rest: ["test", "test2", "test3"] }
+  )
+);

@@ -46,6 +46,18 @@ function arrayToList(array) {
   return list;
 }
 
+//Iterative approach
+function arrayToList(array) {
+  let list = null;
+  for (let i = array.length - 1; i >= 0; i--) {
+    list = { value: array[i], rest: list };
+  }
+  return list;
+}
+
+arrayToList([10, 20]);
+//->{value: 10, rest: {value: 20, rest: null}}
+
 function listToArray(list) {
   // Checking whether user has passed a non-empty array as an argument.
   if (!Object.keys(list).length) {
@@ -165,3 +177,62 @@ Linked lists are used in file systems to maintain the directory structure. Each 
 These are just a few examples of the many applications of linked lists in computer science and software engineering. They are particularly useful in situations where efficient insertion and deletion operations are required and the size of the data structure may change dynamically.
 
 */
+
+//Shorter approaches to the problems
+function arrayToList(inputArray) {
+  let list = {};
+  if (inputArray.length > 0) {
+    list = prepend(inputArray[0], arrayToList(inputArray.slice(1)));
+  } else {
+    return null;
+  }
+  return list;
+}
+
+function prepend(el, list) {
+  return { value: el, rest: list };
+}
+
+console.log(arrayToList([1, 3, 5]));
+// returns:
+//
+//  {
+//  value:1,
+//  rest: {
+//      value:3,
+//      rest: {
+//          value:5,
+//          rest:null
+//          }
+//      }
+//  }
+
+function listToArray(inputList) {
+  currentArray = [inputList.value];
+  if (inputList.rest) {
+    currentArray = currentArray.concat(listToArray(inputList.rest));
+  }
+  return currentArray;
+}
+
+console.log(
+  listToArray({ value: 1, rest: { value: 2, rest: { value: 3, rest: null } } })
+);
+
+// returns:
+// [1, 2, 3]
+
+function nth(list, nr) {
+  if (nr == 0) {
+    return list.value;
+  } else {
+    return nth(list.rest, nr - 1);
+  }
+}
+
+console.log(
+  nth({ value: 1, rest: { value: 2, rest: { value: 3, rest: null } } }, 1)
+);
+
+// returns:
+// 2
