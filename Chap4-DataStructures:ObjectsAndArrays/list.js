@@ -131,37 +131,36 @@ console.log(nth(arrayToList([10, 20, 30]), 0));
 // → 20
 
 /*
-The data structure you're describing, where each object holds a reference to the next one forming a linked list, is indeed a linked list. Linked lists have several applications in computer science and software engineering due to their flexibility and efficiency in certain scenarios. Here are some common applications:
+The data structure you're describing above, where each object holds a reference to the next one forming a linked list, is indeed a linked list. Linked lists have several applications in computer science and software engineering due to their flexibility and efficiency in certain scenarios. Here are some common applications:
 
 Dynamic Memory Allocation:
-
 Linked lists are used in memory management systems to allocate memory dynamically. When a new block of memory is requested, a linked list of free memory blocks is traversed to find a suitable space.
+
 Implementing Stacks and Queues:
-
 Linked lists can be used to implement stack and queue data structures. In a stack, items are added and removed from the same end (LIFO - Last In, First Out), while in a queue, items are added at one end and removed from the other (FIFO - First In, First Out).
+
 Sparse Arrays:
-
 Linked lists are efficient for representing sparse arrays where most elements are empty. Instead of wasting memory to represent empty elements, linked lists only allocate memory for the elements that have values.
+
 Undo Functionality:
-
 Linked lists are used in applications that require undo functionality. Each operation performed is stored as a node in a linked list, allowing users to undo operations by traversing the list backward.
+
 Symbol Tables:
-
 Linked lists are used in symbol tables to represent a collection of key-value pairs, where each key-value pair is stored as a node in the list.
+
 Polynomial Manipulation:
-
 Linked lists can represent polynomials efficiently. Each node in the linked list represents a term in the polynomial, with pointers to the next term.
+
 Hash Table Collision Handling:
-
 In hash table implementations, linked lists are used to handle collisions. When two keys hash to the same index, a linked list of key-value pairs is maintained at that index.
+
 Task Scheduling:
-
 Linked lists are used in task scheduling algorithms, such as Round Robin scheduling, where each task is represented as a node in the list, and tasks are scheduled based on their priority or arrival time.
+
 Graph Algorithms:
-
 Linked lists are used to represent adjacency lists in graph algorithms. In an adjacency list representation, each vertex of the graph is stored as a node in the list, and the list contains references to its neighboring vertices.
-File Systems:
 
+File Systems:
 Linked lists are used in file systems to maintain the directory structure. Each directory entry contains a reference to the next directory entry, forming a linked list of directory entries.
 These are just a few examples of the many applications of linked lists in computer science and software engineering. They are particularly useful in situations where efficient insertion and deletion operations are required and the size of the data structure may change dynamically.
 
