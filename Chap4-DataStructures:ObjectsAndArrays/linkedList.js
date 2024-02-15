@@ -187,6 +187,11 @@ class LinkedList {
       current = current.next; //update the current binding to the next property of the object attached to the head property and if there exist object on the next property, enter the while loop again until the next property value is null
     }
   }
+
+  //Get size
+  getSize() {
+    return this.size;
+  }
 }
 
 const ll = new LinkedList();
@@ -210,3 +215,318 @@ newLL.append(300);
 
 newLL.printListData();
 console.log(newLL.contains(300));
+
+//A real world application example of using a linked list
+class Song {
+  constructor(title, artist) {
+    this.title = title;
+    this.artist = artist;
+    this.next = null;
+  }
+
+  // Method to display song information
+  displayInfo() {
+    console.log(`Title: ${this.title} - Artist: ${this.artist}`);
+  }
+}
+
+class Playlist {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  // Method to add a song to the end of the playlist
+  addSong(title, artist) {
+    const newSong = new Song(title, artist);
+
+    if (!this.head) {
+      this.head = newSong;
+      this.tail = newSong;
+    } else {
+      this.tail.next = newSong;
+      this.tail = newSong;
+    }
+
+    this.size++;
+  }
+
+  // Method to display all songs in the playlist
+  displayPlaylist() {
+    let currentSong = this.head;
+
+    while (currentSong) {
+      currentSong.displayInfo();
+      currentSong = currentSong.next;
+    }
+  }
+
+  // Method to remove a song from the playlist by title
+  removeSong(title) {
+    let currentSong = this.head;
+    let previousSong = null;
+
+    while (currentSong) {
+      if (currentSong.title === title) {
+        if (!previousSong) {
+          this.head = currentSong.next;
+        } else {
+          previousSong.next = currentSong.next;
+        }
+
+        if (!currentSong.next) {
+          this.tail = previousSong;
+        }
+
+        this.size--;
+        return true; // Song found and removed
+      }
+
+      previousSong = currentSong;
+      currentSong = currentSong.next;
+    }
+
+    return false; // Song not found
+  }
+
+  // Method to check if the playlist is empty
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  // Method to get the number of songs in the playlist
+  getLength() {
+    return this.size;
+  }
+
+  // Method to get a song by its title
+  getSongByTitle(title) {
+    let currentSong = this.head;
+
+    while (currentSong) {
+      if (currentSong.title === title) {
+        return currentSong;
+      }
+      currentSong = currentSong.next;
+    }
+
+    return null; // Song not found
+  }
+
+  // Method to clear the playlist
+  clear() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  // Method to play the playlist
+  play() {
+    let currentSong = this.head;
+
+    while (currentSong) {
+      currentSong.displayInfo();
+      currentSong = currentSong.next;
+    }
+  }
+
+  // Method to shuffle the playlist
+  shuffle() {
+    let currentIndex = this.size;
+    let tempValue, randomIndex;
+
+    // While there remain elements to shuffle
+    while (currentIndex !== 0) {
+      // Pick a remaining element
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // Swap it with the current element
+      tempValue = this.getSongAtIndex(currentIndex).data;
+      this.getSongAtIndex(currentIndex).data =
+        this.getSongAtIndex(randomIndex).data;
+      this.getSongAtIndex(randomIndex).data = tempValue;
+    }
+  }
+
+  // Method to get a song by its index
+  getSongAtIndex(index) {
+    let count = 0;
+    let currentSong = this.head;
+
+    while (currentSong) {
+      if (count === index) {
+        return currentSong;
+      }
+      count++;
+      currentSong = currentSong.next;
+    }
+
+    return null; // Index out of bounds
+  }
+
+  // Method to insert a new song after a specific title
+  insertAfter(title, newTitle, newArtist) {
+    const currentSong = this.getSongByTitle(title);
+
+    if (currentSong) {
+      const newSong = new Song(newTitle, newArtist);
+      newSong.next = currentSong.next;
+      currentSong.next = newSong;
+
+      if (currentSong === this.tail) {
+        this.tail = newSong;
+      }
+
+      this.size++;
+      return true;
+    }
+
+    return false; // Title not found
+  }
+
+  // Method to convert the playlist to an array
+  toArray() {
+    let array = [];
+    let currentSong = this.head;
+
+    while (currentSong) {
+      array.push(currentSong);
+      currentSong = currentSong.next;
+    }
+
+    return array;
+  }
+
+  // Method to reverse the playlist
+  reverse() {
+    let prev = null;
+    let current = this.head;
+    let next = null;
+
+    while (current) {
+      next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
+    }
+
+    // Swap head and tail
+    const temp = this.head;
+    this.head = this.tail;
+    this.tail = temp;
+  }
+
+  // Method to get the index of a song by its title
+  getSongIndex(title) {
+    let index = 0;
+    let currentSong = this.head;
+
+    while (currentSong) {
+      if (currentSong.title === title) {
+        return index;
+      }
+      index++;
+      currentSong = currentSong.next;
+    }
+
+    return -1; // Song not found
+  }
+
+  // Method to remove a song at a specific index
+  removeAtIndex(index) {
+    if (index < 0 || index >= this.size) {
+      return false; // Invalid index
+    }
+
+    let currentSong = this.head;
+    let previousSong = null;
+    let currentIndex = 0;
+
+    if (index === 0) {
+      this.head = currentSong.next;
+    } else {
+      while (currentIndex < index) {
+        previousSong = currentSong;
+        currentSong = currentSong.next;
+        currentIndex++;
+      }
+
+      previousSong.next = currentSong.next;
+
+      if (index === this.size - 1) {
+        this.tail = previousSong;
+      }
+    }
+
+    this.size--;
+    return true;
+  }
+
+  // Method to get songs by a specific artist
+  getArtistSongs(artist) {
+    let artistSongs = [];
+    let currentSong = this.head;
+
+    while (currentSong) {
+      if (currentSong.artist === artist) {
+        artistSongs.push(currentSong);
+      }
+      currentSong = currentSong.next;
+    }
+
+    return artistSongs;
+  }
+
+  // Method to merge another playlist into the current playlist
+  mergePlaylist(playlist) {
+    if (!playlist.head) {
+      return; // Nothing to merge
+    }
+
+    if (!this.head) {
+      this.head = playlist.head;
+      this.tail = playlist.tail;
+    } else {
+      this.tail.next = playlist.head;
+      this.tail = playlist.tail;
+    }
+
+    this.size += playlist.size;
+    playlist.clear();
+  }
+
+  // Method to remove duplicate songs from the playlist
+  removeDuplicates() {
+    let currentSong = this.head;
+    let uniqueSongs = {};
+    let previousSong = null;
+
+    while (currentSong) {
+      if (uniqueSongs[currentSong.title]) {
+        previousSong.next = currentSong.next;
+        this.size--;
+      } else {
+        uniqueSongs[currentSong.title] = true;
+        previousSong = currentSong;
+      }
+      currentSong = currentSong.next;
+    }
+  }
+}
+
+// Example usage:
+const playlist = new Playlist();
+playlist.addSong("Bohemian Rhapsody", "Queen");
+playlist.addSong("Hotel California", "Eagles");
+playlist.addSong("Stairway to Heaven", "Led Zeppelin");
+
+console.log("Playlist:");
+playlist.displayPlaylist();
+
+console.log("\nRemoving 'Hotel California' from the playlist...");
+playlist.removeSong("Hotel California");
+
+console.log("\nUpdated Playlist:");
+playlist.displayPlaylist();
