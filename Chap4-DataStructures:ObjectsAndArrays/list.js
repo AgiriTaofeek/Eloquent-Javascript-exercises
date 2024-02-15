@@ -1,6 +1,4 @@
 /*
-
-
 Objects, as generic blobs of values, can be used to build all sorts of data structures. A common data structure is the list (not to be confused with array). A list is a nested set of objects, with the first object holding a reference to the second, the second to the third, and so on.
 
 let list = {
@@ -45,41 +43,6 @@ function arrayToList(array) {
 
   return list;
 }
-
-//Iterative approach
-function arrayToList(array) {
-  let list = null;
-  for (let i = array.length - 1; i >= 0; i--) {
-    list = { value: array[i], rest: list };
-  }
-  return list;
-}
-
-arrayToList([10, 20]);
-//->{value: 10, rest: {value: 20, rest: null}}
-
-function listToArray(list) {
-  // Checking whether user has passed a non-empty array as an argument.
-  if (!Object.keys(list).length) {
-    return [];
-  }
-
-  let array = [list.value];
-
-  // Base Step: Node is the TAIL of the List.
-  if (list.rest === null) {
-    return array;
-  }
-
-  // Recursive Step: Concatenate the array returned by calling the function itself
-  // if the List node contains a reference to another List node via `rest` property.
-
-  // Note about concat() method of an Array
-  // The concat() method is immutable i.e., it does not alter `array`.
-  // It just creates a new array containing the elements of the two arrays.
-  return array.concat(listToArray(list.rest));
-}
-
 function prepend(element, list) {
   // Return a single node List if `list` is an empty List i.e., {}.
   if (list !== null && !Object.keys(list).length) {
@@ -96,51 +59,125 @@ function prepend(element, list) {
   };
 }
 
-function nth(list, index) {
-  // Return undefined if `list` is an empty List i.e., {}.
-  if (!Object.keys(list).length) {
-    return undefined;
+//Shorter approach
+function arrayToList(inputArray) {
+  let list = {};
+  if (inputArray.length > 0) {
+    list = prepend(inputArray[0], arrayToList(inputArray.slice(1)));
+  } else {
+    return null;
   }
-
-  // Create a helper arrow function to keep track of the current index
-  // (while moving deeper into the `list`) & get the value at `index` (if it exists).
-  const get_value = (list, index, current_index) => {
-    // Base Step 1: Current node is the HEAD of `list`.
-    if (list.rest === null) {
-      if (current_index == index) {
-        return list.value;
-      } else {
-        return undefined;
-      }
-    }
-
-    // Base Step 2: Current Node is at the index specified by `index`.
-    if (current_index == index) {
-      return list.value;
-    } else {
-      // Recursive Step: Invokes get_value() on the node referenced by `rest`
-      // with `current_index` being incremented by 1.
-
-      // Alternate Approach: If increment operator (++) operates on `current_index`,
-      // use the prefix version (`++current_index`) instead of the
-      // postfix version (`current_index++`).
-      return get_value(list.rest, index, (current_index += 1));
-    }
-  };
-
-  return get_value(list, index, 0);
+  return list;
+}
+function prepend(el, list) {
+  return { value: el, rest: list };
 }
 
-// PRACTICE: Define iterative version of the aforementioned functions.
+//Iterative approach
+function arrayToList(array) {
+  let list = null;
+  for (let i = array.length - 1; i >= 0; i--) {
+    list = { value: array[i], rest: list };
+    // list = prepend(arr[i], list); // We could use the prepend function for this too
+  }
+  return list;
+}
+function prepend(el, list) {
+  return { value: el, rest: list };
+}
 
-console.log(arrayToList([10, 20]));
+//Recursive approach
+// function listToArray(list) {
+//   // Checking whether user has passed a non-empty array as an argument.
+//   if (!Object.keys(list).length) {
+//     return [];
+//   }
+
+//   let array = [list.value];
+
+//   // Base Step: Node is the TAIL of the List.
+//   if (list.rest === null) {
+//     return array;
+//   }
+
+//   // Recursive Step: Concatenate the array returned by calling the function itself
+//   // if the List node contains a reference to another List node via `rest` property.
+
+//   // Note about concat() method of an Array
+//   // The concat() method is immutable i.e., it does not alter `array`.
+//   // It just creates a new array containing the elements of the two arrays.
+//   return array.concat(listToArray(list.rest));
+// }
+
+//Shorter recursive approach
+// function listToArray(inputList) {
+//   currentArray = [inputList.value];
+//   if (inputList.rest) {
+//     currentArray = currentArray.concat(listToArray(inputList.rest));
+//   }
+//   return currentArray;
+// }
+
+//Iterative approach
+function listToArray(list) {
+  let array = [];
+  for (let node = list; node; node = node.rest) {
+    array.push(node.value);
+  }
+  return array;
+}
+
+//First approach
+// function nth(list, index) {
+//   // Return undefined if `list` is an empty List i.e., {}.
+//   if (!Object.keys(list).length) {
+//     return undefined;
+//   }
+
+//   // Create a helper arrow function to keep track of the current index
+//   // (while moving deeper into the `list`) & get the value at `index` (if it exists).
+//   const get_value = (list, index, current_index) => {
+//     // Base Step 1: Current node is the HEAD of `list`.
+//     if (list.rest === null) {
+//       if (current_index == index) {
+//         return list.value;
+//       } else {
+//         return undefined;
+//       }
+//     }
+
+//     // Base Step 2: Current Node is at the index specified by `index`.
+//     if (current_index == index) {
+//       return list.value;
+//     } else {
+//       // Recursive Step: Invokes get_value() on the node referenced by `rest`
+//       // with `current_index` being incremented by 1.
+
+//       // Alternate Approach: If increment operator (++) operates on `current_index`,
+//       // use the prefix version (`++current_index`) instead of the
+//       // postfix version (`current_index++`).
+//       return get_value(list.rest, index, (current_index += 1));
+//     }
+//   };
+
+//   return get_value(list, index, 0);
+// }
+
+//Second approach
+function nth(list, n) {
+  if (!list) return undefined;
+  else if (n == 0) return list.value;
+  else return nth(list.rest, n - 1);
+}
+
+// console.log(arrayToList([10, 20]));
 // → {value: 10, rest: {value: 20, rest: null}}
-console.log(listToArray(arrayToList([10, 20, 30])));
-// → [10, 20, 30]
-console.log(prepend(10, prepend(20, null)));
-// → {value: 10, rest: {value: 20, rest: null}}
-console.log(nth(arrayToList([10, 20, 30]), 0));
-// → 20
+// console.log(listToArray(arrayToList([10, 20, 30])));
+// // → [10, 20, 30]
+// console.log(prepend(10, prepend(20, null)));
+// // → {value: 10, rest: {value: 20, rest: null}}
+// console.log(nth(arrayToList([10, 20, 30]), 1));
+// // → 20
 
 /*
 The data structure you're describing above, where each object holds a reference to the next one forming a linked list, is indeed a linked list. Linked lists have several applications in computer science and software engineering due to their flexibility and efficiency in certain scenarios. Here are some common applications:
@@ -177,62 +214,3 @@ Linked lists are used in file systems to maintain the directory structure. Each 
 These are just a few examples of the many applications of linked lists in computer science and software engineering. They are particularly useful in situations where efficient insertion and deletion operations are required and the size of the data structure may change dynamically.
 
 */
-
-//Shorter approaches to the problems
-function arrayToList(inputArray) {
-  let list = {};
-  if (inputArray.length > 0) {
-    list = prepend(inputArray[0], arrayToList(inputArray.slice(1)));
-  } else {
-    return null;
-  }
-  return list;
-}
-
-function prepend(el, list) {
-  return { value: el, rest: list };
-}
-
-console.log(arrayToList([1, 3, 5]));
-// returns:
-//
-//  {
-//  value:1,
-//  rest: {
-//      value:3,
-//      rest: {
-//          value:5,
-//          rest:null
-//          }
-//      }
-//  }
-
-function listToArray(inputList) {
-  currentArray = [inputList.value];
-  if (inputList.rest) {
-    currentArray = currentArray.concat(listToArray(inputList.rest));
-  }
-  return currentArray;
-}
-
-console.log(
-  listToArray({ value: 1, rest: { value: 2, rest: { value: 3, rest: null } } })
-);
-
-// returns:
-// [1, 2, 3]
-
-function nth(list, nr) {
-  if (nr == 0) {
-    return list.value;
-  } else {
-    return nth(list.rest, nr - 1);
-  }
-}
-
-console.log(
-  nth({ value: 1, rest: { value: 2, rest: { value: 3, rest: null } } }, 1)
-);
-
-// returns:
-// 2
