@@ -216,7 +216,7 @@ newLL.append(300);
 newLL.printListData();
 console.log(newLL.contains(300));
 
-//A real world application example of using a linked list
+//One real-world application of linked lists in JavaScript is managing a playlist in a music player application.
 class Song {
   constructor(title, artist) {
     this.title = title;
@@ -530,3 +530,211 @@ playlist.removeSong("Hotel California");
 
 console.log("\nUpdated Playlist:");
 playlist.displayPlaylist();
+
+class EditAction {
+  constructor(type, text, position) {
+    this.type = type; // 'insert', 'delete', 'paste'
+    this.text = text; // Text affected by the action
+    this.position = position; // Position in the text where the action occurred
+    this.next = null;
+  }
+}
+
+//Another popular application of a linked list is in implementing a text editor, particularly for handling undo and redo functionality. In this scenario, each edit action (like typing characters, deleting characters, or pasting) can be stored as a node in a linked list. When the user wants to undo or redo an action, the editor can traverse the linked list backward or forward respectively.Let's create a simplified text editor with undo and redo functionality using a linked list:
+class TextEditor {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.currentPosition = 0; // Current cursor position
+  }
+
+  // Method to perform an edit action
+  performAction(type, text) {
+    const action = new EditAction(type, text, this.currentPosition);
+
+    if (!this.head) {
+      this.head = action;
+      this.tail = action;
+    } else {
+      this.tail.next = action;
+      this.tail = action;
+    }
+
+    // Update cursor position
+    if (type === "insert") {
+      this.currentPosition += text.length;
+    } else if (type === "delete") {
+      this.currentPosition -= text.length;
+    }
+  }
+
+  // Method to undo the last action
+  undo() {
+    if (!this.head) {
+      console.log("Nothing to undo.");
+      return;
+    }
+
+    // Undo the action
+    const lastAction = this.tail;
+    if (lastAction.type === "insert") {
+      this.currentPosition -= lastAction.text.length;
+    } else if (lastAction.type === "delete") {
+      this.currentPosition += lastAction.text.length;
+    }
+
+    // Remove the last action from the list
+    let currentAction = this.head;
+    while (currentAction.next !== this.tail) {
+      currentAction = currentAction.next;
+    }
+    currentAction.next = null;
+    this.tail = currentAction;
+  }
+
+  // Method to redo the last undone action
+  redo() {
+    if (!this.tail) {
+      console.log("Nothing to redo.");
+      return;
+    }
+
+    // Redo the action
+    const redoAction = this.tail.next;
+    if (redoAction.type === "insert") {
+      this.currentPosition += redoAction.text.length;
+    } else if (redoAction.type === "delete") {
+      this.currentPosition -= redoAction.text.length;
+    }
+
+    // Move the redo action to the end of the list
+    this.tail.next = redoAction;
+    this.tail = redoAction;
+  }
+
+  // Method to display the current text content
+  displayText() {
+    let currentAction = this.head;
+    let text = "";
+    let position = 0;
+
+    while (currentAction) {
+      if (position === currentAction.position) {
+        if (currentAction.type === "insert") {
+          text += currentAction.text;
+          position += currentAction.text.length;
+        } else if (currentAction.type === "delete") {
+          text = text.slice(0, -currentAction.text.length);
+          position -= currentAction.text.length;
+        }
+      }
+      currentAction = currentAction.next;
+    }
+
+    console.log("Current Text Content:");
+    console.log(text);
+  }
+}
+
+// Example usage:
+const editor = new TextEditor();
+
+// Typing
+editor.performAction("insert", "Hello, ");
+editor.performAction("insert", "world!");
+
+// Deleting
+editor.performAction("delete", "world");
+
+editor.displayText(); // Output: Hello,
+
+editor.undo();
+editor.displayText(); // Output: Hello, world!
+
+editor.redo();
+editor.displayText(); // Output: Hello,
+
+//Another common application of linked lists is in implementing a job scheduling system, particularly in operating systems or task management software. Linked lists can be used to represent queues or lists of tasks, where each task is a node in the linked list.
+class Job {
+  constructor(id, priority, description) {
+    this.id = id;
+    this.priority = priority;
+    this.description = description;
+    this.next = null;
+  }
+}
+
+class JobScheduler {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  // Method to add a job to the scheduler based on priority
+  addJob(id, priority, description) {
+    const newJob = new Job(id, priority, description);
+
+    if (!this.head || priority > this.head.priority) {
+      newJob.next = this.head;
+      this.head = newJob;
+    } else {
+      let current = this.head;
+      while (current.next && priority <= current.next.priority) {
+        current = current.next;
+      }
+      newJob.next = current.next;
+      current.next = newJob;
+    }
+
+    this.size++;
+  }
+
+  // Method to remove and return the highest priority job
+  getNextJob() {
+    if (!this.head) {
+      return null;
+    }
+
+    const removedJob = this.head;
+    this.head = this.head.next;
+    this.size--;
+
+    return removedJob;
+  }
+
+  // Method to display all jobs in the scheduler
+  displayJobs() {
+    let current = this.head;
+
+    while (current) {
+      console.log(
+        `Job ID: ${current.id}, Priority: ${current.priority}, Description: ${current.description}`
+      );
+      current = current.next;
+    }
+  }
+}
+
+// Example usage:
+const scheduler = new JobScheduler();
+
+// Adding jobs
+scheduler.addJob(1, 3, "Process payroll");
+scheduler.addJob(2, 1, "Update database");
+scheduler.addJob(3, 2, "Generate reports");
+
+// Displaying jobs
+console.log("Jobs in Scheduler:");
+scheduler.displayJobs();
+
+// Getting and executing next job
+console.log("\nExecuting next job:");
+const nextJob = scheduler.getNextJob();
+if (nextJob) {
+  console.log(
+    `Executing Job ID: ${nextJob.id}, Description: ${nextJob.description}`
+  );
+} else {
+  console.log("No jobs to execute.");
+}
