@@ -60,6 +60,51 @@ function deepEqual(obj1, obj2) {
   }
 }
 
+//Shorter solution
+function deepEqual(value1, value2) {
+  //Using the typeof operator to check the data type of both parameters
+  if (typeof value1 != typeof value2) {
+    return false;
+  }
+
+  //Check and return true even if parameters are not type of object
+  if (typeof value1 != "object") {
+    if (value1 == value2) {
+      return true;
+    }
+
+    return false;
+  }
+
+  //Check if parameters are not null because even null === null returns false
+  if (value1 != null && value2 != null) {
+    const value1Keys = Object.keys(value1);
+    const value2Keys = Object.keys(value2);
+
+    //Check if the have the same number of properties
+    if (value1Keys.length != value2Keys.length) {
+      return false;
+    }
+
+    let counter = 0;
+
+    //loop through and compare the properties of both parameter objects with recursive call
+    for (let i = 0; i < value1Keys.length; i++) {
+      if (deepEqual(value1[value1Keys[i]], value2[value2Keys[i]]) == true) {
+        counter++;
+      }
+    }
+
+    if (counter == value1Keys.length) {
+      return true;
+    }
+
+    return false;
+  } else {
+    return false;
+  }
+}
+
 let obj = { here: { is: "an" }, object: 2 };
 console.log(deepEqual(obj, obj));
 // → true
@@ -96,72 +141,3 @@ console.log(
   )
 );
 // → false
-
-//Shorter solution
-function deepEqual(first, second, indentation = "") {
-  if (typeof first === typeof second) {
-    if (typeof first === "object") {
-      if (first !== null) {
-        firstKeys = Object.keys(first);
-        secondKeys = Object.keys(second);
-        if (firstKeys.length == secondKeys.length) {
-          trackInequalities = [];
-          for (i = 0; i <= firstKeys.length - 1; i++) {
-            trackInequalities.push(
-              deepEqual(first[firstKeys[i]], second[secondKeys[i]], "    ")
-            );
-          }
-          return !trackInequalities.includes(false);
-        } else {
-          // Different amount of keys
-          return false;
-        }
-      } else {
-        // Both are null
-        return true;
-      }
-    } else {
-      return first === second;
-    }
-  } else {
-    return false;
-  }
-}
-function test(assertion, expected, actual) {
-  console.log(assertion, expected === actual ? "OK" : "FAILED");
-}
-
-test(
-  "Shallow deepEqual with same identities should yield true",
-  true,
-  deepEqual(1, 1)
-);
-test(
-  "Shallow deepEqual with different identities should yield false",
-  false,
-  deepEqual(1, 2)
-);
-test(
-  "Deep deepEqual with same identities should yield true",
-  true,
-  deepEqual(
-    { value: "test", rest: { value: "test2", rest: null } },
-    { value: "test", rest: { value: "test2", rest: null } }
-  )
-);
-test(
-  "Deep deepEqual with different identities should yield false",
-  false,
-  deepEqual(
-    { value: "test", rest: { value: "test2", rest: null } },
-    { value: "test", rest: { value: "diff", rest: null } }
-  )
-);
-test(
-  "Deep deepEqual with identical objects containing arrays should yield true",
-  true,
-  deepEqual(
-    { value: "test", rest: ["test", "test2", "test3"] },
-    { value: "test", rest: ["test", "test2", "test3"] }
-  )
-);
